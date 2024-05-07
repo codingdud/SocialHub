@@ -13,8 +13,12 @@ const PostsWidget = ({ userId, isProfile = false }) => {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
+    
     const data = await response.json();
-    dispatch(setPosts({ posts: data }));
+    console.log(data)
+    if(response.ok){
+      dispatch(setPosts({ posts: data }));
+    }
   };
 
   const getUserPosts = async () => {
@@ -26,6 +30,8 @@ const PostsWidget = ({ userId, isProfile = false }) => {
       }
     );
     const data = await response.json();
+    console.log(data)
+
     dispatch(setPosts({ posts: data }));
   };
 

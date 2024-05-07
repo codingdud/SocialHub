@@ -14,7 +14,9 @@ import postRoutes from "./routes/posts.js";
 import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
-
+import User from "./models/User.js";
+import Post from "./models/Post.js";
+import { users, posts } from "./data/index.js";
 
 /* CONFIGURATIONS */
 const __filename = fileURLToPath(import.meta.url);
@@ -30,16 +32,23 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
+//memorySotage 
+const storage=multer.memoryStorage()
+const upload = multer({
+  storage: storage,
+  limits: { fieldSize: 25 * 1024 * 1024 },
+  });
+
 /* FILE STORAGE */
-const storage = multer.diskStorage({
+/* const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/assets");
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
   },
-});
-const upload = multer({ storage });
+}); */
+/* const upload = multer({ storage }); */
 
 /* ROUTES WITH FILES */
 app.post("/auth/register", upload.single("picture"), register);

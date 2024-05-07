@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "state";
 import TextAreaInput from "components/TextAreaInput";
-
+import {s3link} from '../../links'
 const PostWidget = ({
   postId,
   postUserId,
@@ -79,7 +79,7 @@ const PostWidget = ({
           height="auto"
           alt="post"
           style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
-          src={`http://localhost:3001/assets/${picturePath}`}
+          src={`${s3link}/${picturePath}`}
         />
       )}
       <FlexBetween mt="0.25rem">

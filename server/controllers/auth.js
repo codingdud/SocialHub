@@ -1,10 +1,26 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { S3 } from '@aws-sdk/client-s3';
 
+/* CREATE */
+const s3 = new S3({
+  region: 'ap-south-1',
+  accessKeyId: process.env.YOUR_ACCESS_KEY_ID,
+  secretAccessKey: process.env.YOUR_SECRET_ACCESS_KEY,
+});
 /* REGISTER USER */
 export const register = async (req, res) => {
+
   try {
+    console.log(req.file);
+    const file=req.file
+    s3.putObject({
+      Bucket: 'food-next-image',
+      Key: `user/${file.originalname}`,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    });
     const {
       firstName,
       lastName,

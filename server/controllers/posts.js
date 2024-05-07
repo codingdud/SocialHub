@@ -1,29 +1,42 @@
 import Post from "../models/Post.js";
 import User from "../models/User.js";
+import { S3 } from '@aws-sdk/client-s3';
 
 /* CREATE */
+const s3 = new S3({
+  region: 'ap-south-1',
+  accessKeyId: process.env.YOUR_ACCESS_KEY_ID,
+  secretAccessKey: process.env.YOUR_SECRET_ACCESS_KEY,
+});
 export const createPost = async (req, res) => {
   try {
-    const { userId, description, picturePath } = req.body;
-    const user = await User.findById(userId);
-    const newPost = new Post({
-      userId,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      location: user.location,
-      description,
-      userPicturePath: user.picturePath,
-      picturePath,
-      likes: {},
-      comments: [],
+    console.log(req.file);
+    const file=req.file
+    s3.putObject({
+      Bucket: 'food-next-image',
+      Key: `post/${file.originalname}`,
+      Body: file.buffer,
+      ContentType: file.mimetype,
     });
-    await newPost.save();
-
-    const post = await Post.find();
-    res.status(201).json(post);
-  } catch (err) {
-    res.status(409).json({ message: err.message });
-  }
+  const { userId, description, picturePath } = req.body;
+  const user = await User.findById(userId);
+  const newPost = new Post({
+    userId,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    location: user.location,
+    description,
+    userPicturePath: user.picturePath,
+    picturePath,
+    likes: {},
+    comments: [],
+  });
+  await newPost.save();
+  const post = await Post.find();
+  res.status(201).json(post);
+} catch (err) {
+  res.status(409).json({ message: err.message });
+}
 };
 
 /* READ */
@@ -74,7 +87,7 @@ export const likePost = async (req, res) => {
 export const comment = async (req, res) => {
   try {
     const { id } = req.params;
-    const { comment,userId } = req.body;
+    const { comment, userId } = req.body;
     const post = await Post.findById(id);
     post.comments.push(comment);
 
