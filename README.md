@@ -23,7 +23,7 @@ SocialHub is a social media application built using the MERN stack, allowing use
 
 1. Clone the repository:
    ```
-   git clone 
+   git clone git@github.com:codingdud/SocialHub.git
    cd SocialHub
    ```
 

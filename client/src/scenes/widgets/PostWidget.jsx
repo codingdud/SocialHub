@@ -12,7 +12,8 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "state";
 import TextAreaInput from "components/TextAreaInput";
-import {s3link} from '../../links'
+import {s3link,local} from '../../links'
+
 const PostWidget = ({
   postId,
   postUserId,
@@ -36,7 +37,7 @@ const PostWidget = ({
   const primary = palette.primary.main;
 
   const patchLike = async () => {
-    const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
+    const response = await fetch(`${local}/posts/${postId}/like`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -48,7 +49,7 @@ const PostWidget = ({
     dispatch(setPost({ post: updatedPost }));
   };
   const handelComment = async (text) => {
-    const response = await fetch(`http://localhost:3001/posts/${postId}/comment`, {
+    const response = await fetch(`${local}/posts/${postId}/comment`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -59,7 +60,9 @@ const PostWidget = ({
     const updatedPost = await response.json();
     //console.log(updatedPost)
     dispatch(setPost({ post: updatedPost }));
-    //setIsComments(false);
+    setIsComments(false);
+    comments.push(text);
+    setIsComments(true);
   };
 
   return (
